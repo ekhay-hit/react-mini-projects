@@ -1,48 +1,55 @@
 import { useState, useReducer } from "react";
 // reducer function
 // reducer receive two parameters current state and action
+
+// object has multiple state
+const initialState = { count: 0, step: 1 };
 function reducer(state, action) {
   // here we can return state base on the action
-  if (action.type === "inc") return state + action.payload;
-  if (action.type === "dec") return state - 1; // you can decrease the value directley with no need to pass it in the reducer call funciton
-  if (action.type === "setCount") return action.payload;
+  switch (action.type) {
+    case "dec":
+      return { ...state, count: state.count - state.step };
+    case "inc":
+      return { ...state, count: state.count + state.step };
+    case "setCount":
+      return { ...state, count: action.payload };
+    case "setStep":
+      return { ...state, step: action.payload };
+    case "reset":
+      return initialState;
+    default:
+      throw new Error("Unkonw action");
+  }
 }
 
 function DateCounter() {
-  // const [count, setCount] = useState(0);
-  // user reducer instead of state above
-  const [count, dispatch] = useReducer(reducer, 0);
-  const [step, setStep] = useState(1);
-
+  // passing the whole object to reducer
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { count, step } = state;
   // This mutates the date object.
   const date = new Date();
   date.setDate(date.getDate() + count);
 
   const dec = function () {
-    // setCount((count) => count - 1);
-    // setCount((count) => count - step);// this is when we use state
-    // follwing when we use reducer
     dispatch({ type: "dec" });
   };
 
   const inc = function () {
-    // setCount((count) => count + 1);
-    // setCount((count) => count + step); // dispatch is calling the reducer function
     dispatch({ type: "inc", payload: 1 });
   };
 
   //get the value from the input
   const defineCount = function (e) {
-    // setCount(Number(e.target.value));
+    dispatch({ type: "setCount", payload: Number(e.target.value) });
   };
 
   const defineStep = function (e) {
-    setStep({ type: "setCount", payload: Number(e.target.value) });
+    dispatch({ type: "setStep", payload: Number(e.target.value) });
+    // setStep({ type: "setCount", payload: Number(e.target.value) });
   };
 
   const reset = function () {
-    // setCount(0);
-    setStep(1);
+    dispatch({ type: "reset" });
   };
 
   return (
