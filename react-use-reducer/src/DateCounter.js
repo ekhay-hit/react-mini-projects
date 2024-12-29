@@ -4,7 +4,7 @@ import { useState, useReducer } from "react";
 function reducer(state, action) {
   // here we can return state base on the action
   if (action.type === "inc") return state + action.payload;
-  if (action.type === "dec") return state + action.payload;
+  if (action.type === "dec") return state - 1; // you can decrease the value directley with no need to pass it in the reducer call funciton
   if (action.type === "setCount") return action.payload;
 }
 
@@ -22,13 +22,13 @@ function DateCounter() {
     // setCount((count) => count - 1);
     // setCount((count) => count - step);// this is when we use state
     // follwing when we use reducer
-    dispatch({ type: "dec", payload: -1 });
+    dispatch({ type: "dec" });
   };
 
   const inc = function () {
     // setCount((count) => count + 1);
     // setCount((count) => count + step); // dispatch is calling the reducer function
-    dispatch({ type: "inc", payload: +1 });
+    dispatch({ type: "inc", payload: 1 });
   };
 
   //get the value from the input
@@ -37,7 +37,7 @@ function DateCounter() {
   };
 
   const defineStep = function (e) {
-    setStep(Number(e.target.value));
+    setStep({ type: "setCount", payload: Number(e.target.value) });
   };
 
   const reset = function () {
